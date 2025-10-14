@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Microsoft YaHei', 'SimSun', serif;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #16213e 100%);
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #ffffff 100%);
             color: white;
             overflow-x: hidden;
             min-height: 100vh;
@@ -78,10 +78,7 @@
         .title {
             font-size: 4rem;
             font-weight: bold;
-            background: linear-gradient(45deg, #ffd700, #8b5cf6, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #ffffff;
             margin-bottom: 20px;
             animation: breath 3s ease-in-out infinite;
         }
@@ -127,10 +124,7 @@
             font-weight: bold;
             text-align: center;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, #ffd700, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #ffffff;
         }
 
         .input-description {
@@ -161,8 +155,8 @@
         }
 
         .text-input:focus {
-            border-color: #8b5cf6;
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            border-color: #888888;
+            box-shadow: 0 0 20px rgba(136, 136, 136, 0.3);
         }
 
         .text-input::placeholder {
@@ -198,9 +192,9 @@
             display: block;
             margin: 0 auto;
             padding: 15px 40px;
-            background: linear-gradient(45deg, #8b5cf6, #ec4899);
+            background: #333333;
             color: white;
-            border: none;
+            border: 2px solid #666666;
             border-radius: 10px;
             font-size: 18px;
             font-weight: bold;
@@ -212,7 +206,8 @@
 
         .generate-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+            background: #555555;
+            border-color: #888888;
         }
 
         .generate-btn:active {
@@ -299,17 +294,11 @@
         }
 
         .poetry-title {
-            background: linear-gradient(45deg, #ffd700, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #ffffff;
         }
 
         .floating-title {
-            background: linear-gradient(45deg, #ec4899, #ffd700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #ffffff;
         }
 
         .title-icon {
@@ -378,9 +367,9 @@
 
         .action-btn {
             padding: 12px 30px;
-            background: linear-gradient(45deg, #8b5cf6, #ec4899);
+            background: #333333;
             color: white;
-            border: none;
+            border: 2px solid #666666;
             border-radius: 8px;
             font-size: 16px;
             font-weight: bold;
@@ -390,11 +379,13 @@
 
         .action-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+            background: #555555;
+            border-color: #888888;
         }
 
         .action-btn.secondary {
-            background: linear-gradient(45deg, #ffd700, #8b5cf6);
+            background: #444444;
+            border-color: #777777;
         }
 
         /* 历史按钮 */
@@ -416,7 +407,7 @@
         }
 
         .history-btn:hover {
-            border-color: #8b5cf6;
+            border-color: #888888;
             transform: scale(1.1);
         }
         
@@ -439,7 +430,7 @@
         }
 
         .api-config-btn:hover {
-            border-color: #ffd700;
+            border-color: #888888;
             transform: scale(1.1);
         }
 
@@ -473,10 +464,7 @@
         .history-title {
             font-size: 24px;
             font-weight: bold;
-            background: linear-gradient(45deg, #ffd700, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #ffffff;
         }
 
         .close-btn {
@@ -489,7 +477,7 @@
         }
 
         .close-btn:hover {
-            color: #ec4899;
+            color: #cccccc;
         }
 
         .history-content {
@@ -507,7 +495,7 @@
         }
 
         .history-item:hover {
-            border-color: #8b5cf6;
+            border-color: #888888;
             transform: translateX(5px);
         }
 
@@ -556,10 +544,7 @@
         .api-config-title {
             font-size: 24px;
             font-weight: bold;
-            background: linear-gradient(45deg, #ffd700, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #ffffff;
         }
 
         .api-config-content {
@@ -589,8 +574,8 @@
 
         .config-item input:focus {
             outline: none;
-            border-color: #8b5cf6;
-            box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+            border-color: #888888;
+            box-shadow: 0 0 10px rgba(136, 136, 136, 0.3);
         }
 
         .config-help {
@@ -600,7 +585,7 @@
         }
 
         .config-help a {
-            color: #8b5cf6;
+            color: #cccccc;
             text-decoration: none;
         }
 
@@ -618,8 +603,8 @@
         }
 
         .api-status.connected {
-            color: #00ff00;
-            border-color: #00ff00;
+            color: #ffffff;
+            border-color: #ffffff;
         }
 
         .api-status.error {
@@ -636,9 +621,9 @@
         .config-btn {
             flex: 1;
             padding: 10px;
-            background: linear-gradient(45deg, #8b5cf6, #ec4899);
+            background: #333333;
             color: white;
-            border: none;
+            border: 2px solid #666666;
             border-radius: 6px;
             font-size: 14px;
             font-weight: bold;
@@ -648,11 +633,13 @@
 
         .config-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+            background: #555555;
+            border-color: #888888;
         }
 
         .config-btn.secondary {
-            background: linear-gradient(45deg, #ffd700, #8b5cf6);
+            background: #444444;
+            border-color: #777777;
         }
 
         /* 响应式设计 */
@@ -703,12 +690,12 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(45deg, #8b5cf6, #ec4899);
+            background: #666666;
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(45deg, #ec4899, #ffd700);
+            background: #888888;
         }
     </style>
 </head>
@@ -1073,6 +1060,11 @@
             const container = document.getElementById('floatingTextContainer');
             container.innerHTML = '';
             
+            if (!text || text.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center;">等待漂浮文字...</p>';
+                return;
+            }
+            
             const chars = text.split('');
             chars.forEach((char, index) => {
                 const charElement = document.createElement('div');
@@ -1080,7 +1072,8 @@
                 charElement.textContent = char;
                 charElement.style.left = Math.random() * 100 + '%';
                 charElement.style.top = Math.random() * 100 + '%';
-                charElement.style.color = ['#ffd700', '#8b5cf6', '#ec4899', '#ffffff'][Math.floor(Math.random() * 4)];
+                charElement.style.color = ['#ffffff', '#cccccc', '#999999', '#666666'][Math.floor(Math.random() * 4)];
+                charElement.style.fontSize = (Math.random() * 10 + 16) + 'px';
                 charElement.style.animationDelay = Math.random() * 2 + 's';
                 charElement.style.animationDuration = (3 + Math.random() * 2) + 's';
                 
