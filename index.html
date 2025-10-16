@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>诗意星空 - Poetry Converter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,7 +15,7 @@
         }
 
         body {
-            font-family: 'Microsoft YaHei', 'SimSun', serif;
+            font-family: 'Source Han Serif SC', 'Source Han Serif CN', 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
             background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #ffffff 100%);
             color: white;
             overflow-x: hidden;
@@ -36,6 +39,43 @@
             background-repeat: repeat;
             background-size: 200px 200px;
             animation: twinkle 3s ease-in-out infinite alternate;
+        }
+
+        /* 通用隐藏类 */
+        .hidden { display: none !important; }
+
+        /* 卫星轨道层 */
+        .orbits {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .orbit {
+            position: absolute;
+            border: 1px dashed rgba(255,255,255,0.15);
+            border-radius: 50%;
+            animation: orbit-rotate linear infinite;
+            filter: drop-shadow(0 0 4px rgba(255,255,255,0.1));
+        }
+
+        .satellite {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(255,255,255,0.6);
+        }
+
+        @keyframes orbit-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         @keyframes twinkle {
@@ -242,7 +282,8 @@
 
         .output-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
+            justify-items: center;
             gap: 30px;
             margin-bottom: 40px;
         }
@@ -261,6 +302,7 @@
             backdrop-filter: blur(10px);
             position: relative;
             min-height: 400px;
+            width: min(800px, 100%);
         }
 
         .output-box::before {
@@ -333,8 +375,11 @@
 
         .poetry-text {
             white-space: pre-wrap;
-            font-family: 'KaiTi', '楷体', serif;
+            font-family: 'Source Han Serif SC', 'Source Han Serif CN', 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
             text-align: center;
+            font-size: clamp(22px, 4vw, 36px);
+            line-height: 1.9;
+            letter-spacing: 0.5px;
         }
 
         .floating-text-container {
@@ -411,8 +456,8 @@
             transform: scale(1.1);
         }
         
-        /* API配置按钮 */
-        .api-config-btn {
+        /* 代理配置按钮 */
+        .proxy-config-btn {
             position: fixed;
             top: 30px;
             right: 100px;
@@ -429,9 +474,273 @@
             z-index: 100;
         }
 
-        .api-config-btn:hover {
+        .proxy-config-btn:hover {
             border-color: #888888;
             transform: scale(1.1);
+        }
+        
+        /* 调试按钮 */
+        .debug-btn {
+            position: fixed;
+            top: 30px;
+            right: 170px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .debug-btn:hover {
+            border-color: #888888;
+            transform: scale(1.1);
+        }
+
+        /* 管理员按钮与登录面板 */
+        .admin-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 120;
+        }
+
+        .admin-btn:hover {
+            border-color: #888888;
+            transform: scale(1.1);
+        }
+
+        .admin-panel {
+            position: fixed;
+            top: 100px;
+            left: 30px;
+            width: 280px;
+            background: rgba(10, 14, 39, 0.95);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            z-index: 220;
+            backdrop-filter: blur(10px);
+        }
+
+        .admin-panel h4 {
+            margin-bottom: 10px;
+            color: #ffffff;
+            font-size: 16px;
+        }
+
+        .admin-panel .field {
+            margin-bottom: 10px;
+        }
+
+        .admin-panel input {
+            width: 100%;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        /* 代理配置面板 */
+        .proxy-config-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 2px solid rgba(255, 255, 255, 0.2);
+            transition: right 0.3s ease;
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .proxy-config-panel.open {
+            right: 0;
+        }
+
+        .proxy-config-header {
+            padding: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .proxy-config-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .proxy-config-content {
+            padding: 20px;
+        }
+
+        .config-item {
+            margin-bottom: 20px;
+        }
+
+        .config-item label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .config-item input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .config-item input:focus {
+            outline: none;
+            border-color: #888888;
+            box-shadow: 0 0 10px rgba(136, 136, 136, 0.3);
+        }
+
+        .config-help {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .proxy-status {
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .proxy-status.connected {
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+
+        .proxy-status.error {
+            color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+
+        .config-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .config-btn {
+            flex: 1;
+            padding: 10px;
+            background: #333333;
+            color: white;
+            border: 2px solid #666666;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .config-btn:hover {
+            transform: scale(1.05);
+            background: #555555;
+            border-color: #888888;
+        }
+
+        .config-btn.secondary {
+            background: #444444;
+            border-color: #777777;
+        }
+
+        /* 调试面板 */
+        .debug-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 2px solid rgba(255, 255, 255, 0.2);
+            transition: right 0.3s ease;
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .debug-panel.open {
+            right: 0;
+        }
+
+        .debug-header {
+            padding: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .debug-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .debug-content {
+            padding: 20px;
+        }
+
+        .debug-section {
+            margin-bottom: 25px;
+        }
+
+        .debug-section h4 {
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .debug-info {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #ccc;
+            white-space: pre-wrap;
+            max-height: 150px;
+            overflow-y: auto;
         }
 
         /* 历史面板 */
@@ -514,133 +823,31 @@
             color: #999;
         }
 
-        /* API配置面板 */
-        .api-config-panel {
-            position: fixed;
-            top: 0;
-            right: -400px;
-            width: 400px;
-            height: 100vh;
-            background: rgba(10, 14, 39, 0.95);
-            backdrop-filter: blur(20px);
-            border-left: 2px solid rgba(255, 255, 255, 0.2);
-            transition: right 0.3s ease;
-            z-index: 200;
-            overflow-y: auto;
-        }
-
-        .api-config-panel.open {
-            right: 0;
-        }
-
-        .api-config-header {
-            padding: 30px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        .history-item-top {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-
-        .api-config-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffffff;
-        }
-
-        .api-config-content {
-            padding: 20px;
-        }
-
-        .config-item {
-            margin-bottom: 20px;
-        }
-
-        .config-item label {
-            display: block;
-            color: #ccc;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .config-item input {
-            width: 100%;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: white;
-            font-size: 14px;
-        }
-
-        .config-item input:focus {
-            outline: none;
-            border-color: #888888;
-            box-shadow: 0 0 10px rgba(136, 136, 136, 0.3);
-        }
-
-        .config-help {
-            font-size: 12px;
-            color: #999;
-            margin-top: 5px;
-        }
-
-        .config-help a {
-            color: #cccccc;
-            text-decoration: none;
-        }
-
-        .config-help a:hover {
-            text-decoration: underline;
-        }
-
-        .api-status {
-            padding: 8px 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: #999;
-            font-size: 14px;
-        }
-
-        .api-status.connected {
-            color: #ffffff;
-            border-color: #ffffff;
-        }
-
-        .api-status.error {
-            color: #ff6b6b;
-            border-color: #ff6b6b;
-        }
-
-        .config-actions {
-            display: flex;
+            justify-content: space-between;
             gap: 10px;
-            margin-top: 20px;
+            margin-bottom: 8px;
         }
 
-        .config-btn {
-            flex: 1;
-            padding: 10px;
-            background: #333333;
-            color: white;
-            border: 2px solid #666666;
+        .history-delete-btn {
+            background: rgba(255, 107, 107, 0.15);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 107, 107, 0.5);
             border-radius: 6px;
-            font-size: 14px;
+            padding: 6px 10px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
-        .config-btn:hover {
-            transform: scale(1.05);
-            background: #555555;
-            border-color: #888888;
+        .history-delete-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+            transform: scale(1.02);
         }
 
-        .config-btn.secondary {
-            background: #444444;
-            border-color: #777777;
-        }
 
         /* 响应式设计 */
         @media (max-width: 768px) {
@@ -702,9 +909,27 @@
 <body>
     <!-- 星空背景 -->
     <div class="stars"></div>
+    <div class="orbits" id="orbitsLayer"></div>
     
     <!-- 浮动粒子 -->
     <div id="particles"></div>
+    
+    <!-- 管理员入口 -->
+    <button class="admin-btn" id="adminBtn" title="管理员登录">🔐</button>
+    <div class="admin-panel hidden" id="adminPanel">
+        <h4>管理员登录</h4>
+        <div class="field">
+            <input id="adminUser" type="text" placeholder="用户名">
+        </div>
+        <div class="field">
+            <input id="adminPass" type="password" placeholder="密码">
+        </div>
+        <div class="admin-actions">
+            <button class="config-btn" id="adminLoginBtn">登录</button>
+            <button class="config-btn secondary" id="adminCancelBtn">取消</button>
+        </div>
+        <div class="config-help" id="adminMsg"></div>
+    </div>
     
     <!-- 主要内容 -->
     <div class="container">
@@ -750,19 +975,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- 漂浮语言 -->
-                <div class="output-box">
-                    <div class="output-title">
-                        <span class="floating-title">漂浮语言</span>
-                        <span class="title-icon">💫</span>
-                    </div>
-                    <div class="output-content">
-                        <div class="floating-text-container" id="floatingTextContainer">
-                            <p style="color: #999; text-align: center;">等待漂浮文字...</p>
-                        </div>
-                    </div>
-                </div>
             </div>
             
             <!-- 操作按钮 -->
@@ -774,10 +986,14 @@
     </div>
     
         <!-- 历史按钮 -->
-        <button class="history-btn" onclick="toggleHistory()">📚</button>
+        <button class="history-btn" onclick="toggleHistory()" id="historyBtn">📚</button>
         
         <!-- API配置按钮 -->
-        <button class="api-config-btn" onclick="toggleApiConfig()">⚙️</button>
+        <button class="proxy-config-btn" onclick="toggleProxyConfig()" id="proxyBtn">🔑</button>
+        
+        <!-- 调试按钮 -->
+        <button class="debug-btn" onclick="toggleDebugPanel()" id="debugBtn">🐛</button>
+        
     
     <!-- 历史面板 -->
     <div class="history-panel" id="historyPanel">
@@ -791,36 +1007,97 @@
     </div>
     
     <!-- API配置面板 -->
-    <div class="api-config-panel" id="apiConfigPanel">
-        <div class="api-config-header">
-            <h3 class="api-config-title">API配置</h3>
-            <button class="close-btn" onclick="toggleApiConfig()">×</button>
+    <div class="proxy-config-panel" id="proxyConfigPanel">
+        <div class="proxy-config-header">
+            <h3 class="proxy-config-title">API配置</h3>
+            <button class="close-btn" onclick="toggleProxyConfig()">×</button>
         </div>
-        <div class="api-config-content">
+        <div class="proxy-config-content">
             <div class="config-item">
-                <label for="apiKeyInput">Claude API密钥:</label>
-                <input type="password" id="apiKeyInput" placeholder="请输入您的Claude API密钥">
-                <p class="config-help">获取API密钥: <a href="https://console.anthropic.com/" target="_blank">https://console.anthropic.com/</a></p>
+                <label for="baseUrlInput">Moonshot（OpenAI兼容）Base URL:</label>
+                <input type="text" id="baseUrlInput" placeholder="例如: https://api.moonshot.cn/v1">
+                <p class="config-help">公共服务地址: https://api.moonshot.cn</p>
+                <p class="config-help">Chat Completions: https://api.moonshot.cn/v1/chat/completions</p>
             </div>
             <div class="config-item">
-                <label for="apiStatus">API状态:</label>
-                <div id="apiStatus" class="api-status">未配置</div>
+                <label for="apiKeyInput">Moonshot 兼容 API Key:</label>
+                <input type="password" id="apiKeyInput" placeholder="请输入您的API Key">
+            </div>
+            <div class="config-item">
+                <label for="proxyStatus">连接状态:</label>
+                <div id="proxyStatus" class="proxy-status">未配置</div>
             </div>
             <div class="config-actions">
-                <button class="config-btn" onclick="saveApiKey()">保存配置</button>
-                <button class="config-btn secondary" onclick="testApiKey()">测试连接</button>
+                <button class="config-btn" onclick="saveProxyUrl()">保存配置</button>
+                <button class="config-btn secondary" onclick="testProxyUrl()">测试连接</button>
             </div>
         </div>
     </div>
+    
+    <!-- 调试面板 -->
+    <div class="debug-panel" id="debugPanel">
+        <div class="debug-header">
+            <h3 class="debug-title">调试信息</h3>
+            <button class="close-btn" onclick="toggleDebugPanel()">×</button>
+        </div>
+        <div class="debug-content">
+            <div class="debug-section">
+                <h4>API配置信息</h4>
+                <div id="debugApiInfo" class="debug-info"></div>
+            </div>
+            <div class="debug-section">
+                <h4>最近错误</h4>
+                <div id="debugErrors" class="debug-info"></div>
+            </div>
+            <div class="debug-section">
+                <h4>网络测试</h4>
+                <button class="config-btn" onclick="testNetworkConnection()">测试网络连接</button>
+                <div id="debugNetwork" class="debug-info"></div>
+            </div>
+        </div>
+    </div>
+    
 
     <script>
         // 全局变量
         let history = JSON.parse(localStorage.getItem('poetry-history') || '[]');
         let isGenerating = false;
+        let debugErrors = [];
+        let isAdmin = false;
         
-        // Claude API 配置
-        let CLAUDE_API_KEY = localStorage.getItem('claude-api-key') || 'YOUR_CLAUDE_API_KEY_HERE';
-        const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
+        // API 配置
+        let API_KEY = localStorage.getItem('openai-api-key') || 'YOUR_OPENAI_COMPATIBLE_API_KEY_HERE';
+        let BASE_URL = localStorage.getItem('base-url') || 'https://api.moonshot.cn/v1';
+
+        // 规范化 Base URL，确保包含 /v1，且移除多余斜杠
+        function normalizeBaseUrl(url) {
+            if (!url) return '';
+            let u = url.trim();
+            // 允许用户粘贴完整端点 /v1/chat/completions，规范回 /v1
+            u = u.replace(/\/+$/, '');
+            if (/\/v1\/chat\/completions(\b|\/|\?|#)?$/.test(u)) {
+                u = u.replace(/\/v1\/chat\/completions(\b|\/|\?|#)?$/, '/v1');
+            }
+            // 如果没有路径或路径不是以 /v1 开头，则追加 /v1
+            const hasV1 = /\/v1(\b|\/|\?|#)$/.test(u) || /\/v1(\/|\?|#)/.test(u);
+            if (!hasV1) {
+                u = u + '/v1';
+            }
+            return u.replace(/\/+$/, '');
+        }
+
+        // 迁移旧的或不正确的 Base URL 到 Moonshot
+        function migrateLegacyBaseUrl() {
+            const stored = localStorage.getItem('base-url') || '';
+            if (!stored) return;
+            const lower = stored.toLowerCase();
+            if (lower.includes('zhihuiai')) {
+                const fixed = 'https://api.moonshot.cn/v1';
+                localStorage.setItem('base-url', fixed);
+                BASE_URL = fixed;
+            }
+        }
+        
 
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
@@ -828,7 +1105,10 @@
             createFloatingChars();
             updateGenerateButton();
             loadHistory();
-            loadApiConfig();
+            migrateLegacyBaseUrl();
+            loadProxyConfig();
+            createOrbits();
+            setupAdminUI();
             
             // 输入框事件
             document.getElementById('textInput').addEventListener('input', function() {
@@ -839,6 +1119,71 @@
             // 生成按钮事件
             document.getElementById('generateBtn').addEventListener('click', generatePoetry);
         });
+        // 管理员：初始化与控制
+        function setupAdminUI() {
+            // 恢复登录状态
+            isAdmin = localStorage.getItem('pc-is-admin') === '1';
+            updateAdminVisibility();
+
+            const adminBtn = document.getElementById('adminBtn');
+            const adminPanel = document.getElementById('adminPanel');
+            const loginBtn = document.getElementById('adminLoginBtn');
+            const cancelBtn = document.getElementById('adminCancelBtn');
+            const msg = document.getElementById('adminMsg');
+
+            adminBtn.addEventListener('click', () => {
+                adminPanel.classList.toggle('hidden');
+                msg.textContent = isAdmin ? '已登录，可选择登出' : '';
+                if (isAdmin) {
+                    // 切换为登出
+                    loginBtn.textContent = '登出';
+                } else {
+                    loginBtn.textContent = '登录';
+                }
+            });
+
+            cancelBtn.addEventListener('click', () => {
+                adminPanel.classList.add('hidden');
+                msg.textContent = '';
+            });
+
+            loginBtn.addEventListener('click', () => {
+                if (isAdmin) {
+                    // 登出
+                    isAdmin = false;
+                    localStorage.removeItem('pc-is-admin');
+                    msg.textContent = '已登出';
+                    updateAdminVisibility();
+                    return;
+                }
+                const u = (document.getElementById('adminUser').value || '').trim();
+                const p = (document.getElementById('adminPass').value || '').trim();
+                if (u === 'Lam' && p === 'kee0206happy') {
+                    isAdmin = true;
+                    localStorage.setItem('pc-is-admin', '1');
+                    msg.textContent = '登录成功';
+                    updateAdminVisibility();
+                } else {
+                    msg.textContent = '用户名或密码错误';
+                }
+            });
+        }
+
+        function updateAdminVisibility() {
+            const historyBtn = document.getElementById('historyBtn');
+            const proxyBtn = document.getElementById('proxyBtn');
+            const debugBtn = document.getElementById('debugBtn');
+            if (!historyBtn || !proxyBtn || !debugBtn) return;
+            if (isAdmin) {
+                historyBtn.classList.remove('hidden');
+                proxyBtn.classList.remove('hidden');
+                debugBtn.classList.remove('hidden');
+            } else {
+                historyBtn.classList.add('hidden');
+                proxyBtn.classList.add('hidden');
+                debugBtn.classList.add('hidden');
+            }
+        }
 
         // 创建粒子效果
         function createParticles() {
@@ -856,24 +1201,40 @@
             }
         }
 
-        // 创建浮动字符
-        function createFloatingChars() {
-            const container = document.getElementById('floatingChars');
-            const chars = ['诗', '意', '星', '空', '梦', '幻', '美', '丽'];
-            
-            container.innerHTML = '';
-            
-            for (let i = 0; i < 8; i++) {
-                const char = document.createElement('div');
-                char.className = 'floating-char';
-                char.textContent = chars[i];
-                char.style.left = Math.random() * 100 + '%';
-                char.style.top = Math.random() * 100 + '%';
-                char.style.animationDelay = Math.random() * 4 + 's';
-                char.style.animationDuration = (2 + Math.random() * 2) + 's';
-                container.appendChild(char);
-            }
+        // 创建卫星轨道
+        function createOrbits() {
+            const layer = document.getElementById('orbitsLayer');
+            if (!layer) return;
+            layer.innerHTML = '';
+            const orbitConfigs = [
+                { size: 500, duration: 120, top: '20%', left: '10%', tilt: 15 },
+                { size: 700, duration: 180, top: '40%', left: '30%', tilt: -10 },
+                { size: 900, duration: 240, top: '30%', left: '55%', tilt: 25 },
+                { size: 650, duration: 160, top: '60%', left: '15%', tilt: -20 }
+            ];
+            orbitConfigs.forEach(cfg => {
+                const orbit = document.createElement('div');
+                orbit.className = 'orbit';
+                orbit.style.width = cfg.size + 'px';
+                orbit.style.height = cfg.size + 'px';
+                orbit.style.top = cfg.top;
+                orbit.style.left = cfg.left;
+                orbit.style.transform = `rotate(${cfg.tilt}deg)`;
+                orbit.style.animationDuration = cfg.duration + 's';
+
+                const sat = document.createElement('div');
+                sat.className = 'satellite';
+                sat.style.top = '50%';
+                sat.style.left = '-3px';
+                sat.style.transform = 'translateY(-50%)';
+                orbit.appendChild(sat);
+
+                layer.appendChild(orbit);
+            });
         }
+
+        // 创建浮动字符
+        function createFloatingChars() {}
 
         // 更新生成按钮状态
         function updateGenerateButton() {
@@ -901,27 +1262,22 @@
             `;
             
             try {
-                // 调用Claude API生成诗意文本
-                const poetry = await generatePoetryWithClaude(input);
-                const floatingText = generateFloatingText(input);
+                // 调用AI生成诗意文本
+                const poetry = await generatePoem(input);
                 
                 // 显示结果
                 document.getElementById('poetryOutput').innerHTML = `
                     <div class="poetry-text">${poetry}</div>
                 `;
                 
-                // 显示漂浮文字
-                showFloatingText(floatingText);
-                
                 // 保存到历史
-                saveToHistory(input, poetry, floatingText);
+                saveToHistory(input, poetry);
                 
             } catch (error) {
                 console.error('生成诗歌失败:', error);
                 
                 // 如果API调用失败，使用本地生成作为备用
                 const poetry = generatePoetryText(input);
-                const floatingText = generateFloatingText(input);
                 
                 document.getElementById('poetryOutput').innerHTML = `
                     <div class="poetry-text">${poetry}</div>
@@ -930,58 +1286,131 @@
                     </div>
                 `;
                 
-                showFloatingText(floatingText);
-                saveToHistory(input, poetry, floatingText);
+                saveToHistory(input, poetry);
             }
             
             isGenerating = false;
             updateGenerateButton();
         }
         
-        // 使用Claude API生成诗歌
-        async function generatePoetryWithClaude(input) {
-            if (CLAUDE_API_KEY === 'YOUR_CLAUDE_API_KEY_HERE') {
-                throw new Error('请配置Claude API密钥');
+        // 使用代理服务器生成诗歌
+        async function generatePoem(prompt) {
+            // 每次调用前重新读取最新配置，避免只测试未保存导致生成失败
+            API_KEY = localStorage.getItem('openai-api-key') || API_KEY;
+            BASE_URL = normalizeBaseUrl(localStorage.getItem('base-url') || BASE_URL);
+
+            if (API_KEY === 'YOUR_OPENAI_COMPATIBLE_API_KEY_HERE' || !API_KEY) {
+                throw new Error('请配置OpenAI Compatible API Key');
             }
-            
-            const prompt = `请将以下中文文本转换为优美的诗歌形式，保持原意但增加诗意和美感：
 
-原文：${input}
+            console.log('开始API调用(直连 Moonshot):', {
+                baseUrl: BASE_URL,
+                prompt: prompt.substring(0, 50) + '...'
+            });
 
-要求：
-1. 保持原文的核心含义
-2. 使用优美的诗歌语言
-3. 适当分行，形成诗歌的韵律感
-4. 可以适当添加一些诗意的修饰
-5. 保持中文的古典美感
+            try {
+                const base = normalizeBaseUrl(BASE_URL);
+                // 先进行 /models 探测，验证网关 JSON 可用
+                const modelsUrl = `${base}/models`;
+                const modelsResp = await fetch(modelsUrl, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${API_KEY}` }
+                });
+                const modelsCt = modelsResp.headers.get('content-type') || '';
+                if (!modelsResp.ok || !modelsCt.includes('application/json')) {
+                    const text = await modelsResp.text();
+                    throw new Error(`网关 /models 探测失败，收到 ${modelsResp.status} ${modelsResp.statusText}，Content-Type: ${modelsCt}.\n请确认 Base URL 是否为 https://api.moonshot.cn/v1。\n片段: ${text.substring(0, 500)}`);
+                }
 
-请直接输出转换后的诗歌，不要添加其他说明文字。`;
-            
-            const response = await fetch(CLAUDE_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': CLAUDE_API_KEY,
-                    'anthropic-version': '2023-06-01'
-                },
-                body: JSON.stringify({
-                    model: 'claude-3-sonnet-20240229',
-                    max_tokens: 1000,
+                const apiUrl = `${base}/chat/completions`;
+                const requestBody = {
+                    model: "moonshot-v1-8k",
                     messages: [
                         {
-                            role: 'user',
+                            role: "system",
+                            content: "你是一位中文现代与后现代诗的转化者与整理者。请把用户输入改写成更具随机性与口语感的自由诗，词汇丰富、意象层叠但不晦涩，避免空泛口号与套路句式。语言日常、松弛，带些街头与屋檐的气味，注重细节的可触性与可见性，以‘展示’代替‘解释’。允许后现代主义诗歌的碎片化、互文与轻微的元叙事自觉，但要克制，不喧宾夺主。引入“宇宙感”与“漂浮感”：在宇宙尺度与微观粒子之间自由切换，制造失重、悬浮、低重力的阅读体验；光、风、潮汐、暗物质、引力波等意象可与人间生活的细枝末节同场出现。可少量融入跨学科意象（天文、植物、矿物、神经、光学、风象、潮汐、化学键等），以人间温度为轴线。节奏可断裂可黏合，允许跳接与留白，用比喻与比拟搭建隐形之桥。风格参考北岛与西西，但不模仿其句式与口吻，仅取其冷静与轻盈、坚硬与温柔；整体气质融入后现代诗歌与朦胧诗的隐喻与暧昧、留白与多义。输出不超过100个汉字，可包含标点，单段为宜。"
+                        },
+                        {
+                            role: "user", 
                             content: prompt
                         }
-                    ]
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`API调用失败: ${response.status} ${response.statusText}`);
+                    ],
+                    max_tokens: 160,
+                    temperature: 0.95,
+                    top_p: 0.95,
+                    presence_penalty: 0.6,
+                    frequency_penalty: 0.2
+                };
+                
+                const headers = {
+                    "Content-Type": "application/json"
+                };
+                
+                headers["Authorization"] = `Bearer ${API_KEY}`;
+
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                });
+
+                console.log('API响应状态:', response.status, response.statusText);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API错误响应:', errorText);
+                    throw new Error(`API调用失败: ${response.status} ${response.statusText}\n详情: ${errorText}`);
+                }
+
+                // 检查响应内容类型
+                const contentType = response.headers.get('content-type');
+                console.log('响应Content-Type:', contentType);
+                
+                let data;
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                    console.log('API响应数据:', data);
+                } else {
+                    // 如果不是JSON，获取文本内容
+                    const textResponse = await response.text();
+                    console.log('非JSON响应内容:', textResponse.substring(0, 200) + '...');
+                    
+                    // 尝试解析为JSON（可能包含HTML）
+                    try {
+                        data = JSON.parse(textResponse);
+                    } catch (parseError) {
+                        throw new Error(`响应不是有效的JSON格式，通常是 Base URL 缺少 /v1 或被重定向到 HTML。\n当前 Base URL: ${base}\nContent-Type: ${contentType || '未知'}\n片段: ${textResponse.substring(0, 500)}\n建议：在“API配置”里把 Base URL 设置为 https://api.moonshot.cn/v1`);
+                    }
+                }
+                
+                // 处理响应格式
+                let poemText;
+                // 直接API响应格式
+                poemText = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
+                
+                if (poemText) {
+                    return poemText;
+                } else if (data.error) {
+                    throw new Error(`API错误: ${data.error.message || '未知错误'}`);
+                } else {
+                    return "生成失败，请检查API服务。";
+                }
+            } catch (error) {
+                console.error('API调用异常:', error);
+                addDebugError(`API调用失败: ${error.message}`);
+                
+                // 检查是否是CORS错误
+                if (error.message.includes('CORS') || error.message.includes('cross-origin')) {
+                    throw new Error('CORS跨域错误：API服务器不允许跨域访问。请检查API端点是否正确，或使用代理服务。');
+                }
+                
+                // 检查是否是网络错误
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    throw new Error('网络连接失败：可能原因:\n1.API端点地址错误\n2.网络连接问题\n3. API服务不可用');
+                }
+                
+                throw error;
             }
-            
-            const data = await response.json();
-            return data.content[0].text.trim();
         }
 
         // 生成诗意文本
@@ -998,57 +1427,9 @@
             return poetryLines.join('\n\n');
         }
 
-        // 生成摩斯密码式漂浮文字
-        function generateFloatingText(text) {
-            console.log('生成漂浮文字，输入文本:', text); // 调试信息
-            
-            const morseChars = ['·', '-', '0', '1', '!', '?', '@', '#', '$', '%', '&', '*', '+', '=', '~', '^', '|', '\\', '/', '<', '>', '[', ']', '{', '}', '(', ')', ';', ':', '"', "'"];
-            const symbols = ['★', '☆', '◆', '◇', '▲', '△', '●', '○', '■', '□', '♠', '♣', '♥', '♦', '♪', '♫', '♬', '♩', '♭', '♯', '♮', '♯', '♭', '♮'];
-            const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-            const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-            
-            // 根据输入文本生成基础序列
-            const inputChars = text.split('').filter(char => char.trim());
-            let floatingSequence = [];
-            
-            // 为每个输入字符生成对应的摩斯密码式序列
-            inputChars.forEach(char => {
-                const charCode = char.charCodeAt(0);
-                const morsePattern = generateMorsePattern(charCode);
-                floatingSequence.push(...morsePattern);
-            });
-            
-            // 添加随机混合元素
-            const randomElements = [
-                ...Array.from({ length: 15 }, () => morseChars[Math.floor(Math.random() * morseChars.length)]),
-                ...Array.from({ length: 10 }, () => symbols[Math.floor(Math.random() * symbols.length)]),
-                ...Array.from({ length: 8 }, () => numbers[Math.floor(Math.random() * numbers.length)]),
-                ...Array.from({ length: 7 }, () => letters[Math.floor(Math.random() * letters.length)])
-            ];
-            
-            // 混合并随机排列
-            const allElements = [...floatingSequence, ...randomElements];
-            const result = shuffleArray(allElements).join('');
-            
-            console.log('生成的漂浮文字:', result); // 调试信息
-            return result;
-        }
+        // 已移除漂浮语言生成
         
-        // 生成摩斯密码模式
-        function generateMorsePattern(charCode) {
-            const patterns = [];
-            const binary = charCode.toString(2);
-            
-            for (let i = 0; i < binary.length; i++) {
-                patterns.push(binary[i] === '1' ? '-' : '·');
-            }
-            
-            // 添加一些随机符号
-            patterns.push(['!', '?', '@', '#', '$'][Math.floor(Math.random() * 5)]);
-            patterns.push(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'][Math.floor(Math.random() * 10)]);
-            
-            return patterns;
-        }
+        // 旧的摩斯模式已移除，统一使用二进制流
         
         // 数组随机打乱
         function shuffleArray(array) {
@@ -1102,12 +1483,11 @@
         }
 
         // 保存到历史
-        function saveToHistory(input, poetry, floatingText) {
+        function saveToHistory(input, poetry) {
             const item = {
                 id: Date.now().toString(),
                 input: input,
                 poetry: poetry,
-                floatingText: floatingText,
                 timestamp: new Date().toLocaleString('zh-CN')
             };
             
@@ -1130,9 +1510,12 @@
             }
             
             content.innerHTML = history.map(item => `
-                <div class="history-item" onclick="loadHistoryItem('${item.id}')">
-                    <div class="history-item-text">${item.input}</div>
-                    <div class="history-item-time">${item.timestamp}</div>
+                <div class="history-item">
+                    <div class="history-item-top">
+                        <div class="history-item-time">${item.timestamp}</div>
+                        <button class="history-delete-btn" onclick="deleteHistoryItem('${item.id}', event)">删除</button>
+                    </div>
+                    <div class="history-item-text" onclick="loadHistoryItem('${item.id}')">${item.input}</div>
                 </div>
             `).join('');
         }
@@ -1146,8 +1529,19 @@
             document.getElementById('poetryOutput').innerHTML = `
                 <div class="poetry-text">${item.poetry}</div>
             `;
-            showFloatingText(item.floatingText);
             updateGenerateButton();
+        }
+
+        function deleteHistoryItem(id, evt) {
+            if (evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+            }
+            const idx = history.findIndex(h => h.id === id);
+            if (idx === -1) return;
+            history.splice(idx, 1);
+            localStorage.setItem('poetry-history', JSON.stringify(history));
+            loadHistory();
         }
 
         // 切换历史面板
@@ -1174,7 +1568,7 @@
                     <title>诗意总览</title>
                     <style>
                         body {
-                            font-family: 'Microsoft YaHei', serif;
+                            font-family: 'Source Han Serif SC', 'Source Han Serif CN', 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
                             background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #16213e 100%);
                             color: white;
                             margin: 0;
@@ -1214,7 +1608,7 @@
                             color: #ffd700;
                         }
                         .history-card-poetry {
-                            font-family: 'KaiTi', serif;
+                            font-family: 'Source Han Serif SC', 'Source Han Serif CN', 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
                             line-height: 1.8;
                             white-space: pre-wrap;
                             margin-bottom: 15px;
@@ -1266,91 +1660,268 @@
         }
         
         // API配置相关函数
-        function loadApiConfig() {
+        function loadProxyConfig() {
             const apiKeyInput = document.getElementById('apiKeyInput');
-            const apiStatus = document.getElementById('apiStatus');
+            const baseUrlInput = document.getElementById('baseUrlInput');
+            const proxyStatus = document.getElementById('proxyStatus');
             
-            if (CLAUDE_API_KEY && CLAUDE_API_KEY !== 'YOUR_CLAUDE_API_KEY_HERE') {
-                apiKeyInput.value = CLAUDE_API_KEY;
-                apiStatus.textContent = '已配置';
-                apiStatus.className = 'api-status connected';
+            // 加载 Base URL
+            if (BASE_URL) {
+                baseUrlInput.value = BASE_URL;
+            }
+            
+            // 加载API Key
+            if (API_KEY && API_KEY !== 'YOUR_OPENAI_COMPATIBLE_API_KEY_HERE') {
+                apiKeyInput.value = API_KEY;
+            }
+            
+            // 更新状态显示
+            if (BASE_URL && (API_KEY && API_KEY !== 'YOUR_OPENAI_COMPATIBLE_API_KEY_HERE')) {
+                proxyStatus.textContent = '直连模式已配置';
+                proxyStatus.className = 'proxy-status connected';
             } else {
-                apiStatus.textContent = '未配置';
-                apiStatus.className = 'api-status';
+                proxyStatus.textContent = '未配置';
+                proxyStatus.className = 'proxy-status';
             }
         }
         
-        function toggleApiConfig() {
-            const panel = document.getElementById('apiConfigPanel');
+        function toggleProxyConfig() {
+            const panel = document.getElementById('proxyConfigPanel');
             panel.classList.toggle('open');
         }
         
-        function saveApiKey() {
+        function saveProxyUrl() {
             const apiKeyInput = document.getElementById('apiKeyInput');
+            const baseUrlInput = document.getElementById('baseUrlInput');
             const apiKey = apiKeyInput.value.trim();
+            const baseUrl = normalizeBaseUrl(baseUrlInput.value.trim());
             
-            if (!apiKey) {
-                alert('请输入API密钥！');
+            if (!baseUrl && !apiKey) {
+                alert('请至少配置 Base URL 和 API Key！');
                 return;
             }
             
-            CLAUDE_API_KEY = apiKey;
-            localStorage.setItem('claude-api-key', apiKey);
+            // 保存 Base URL（直连模式）
+            if (baseUrl) {
+                BASE_URL = baseUrl;
+                localStorage.setItem('base-url', baseUrl);
+                // 同步输入框显示规范化后的地址
+                baseUrlInput.value = BASE_URL;
+            }
             
-            const apiStatus = document.getElementById('apiStatus');
-            apiStatus.textContent = '已保存';
-            apiStatus.className = 'api-status connected';
+            // 保存API Key
+            if (apiKey) {
+                API_KEY = apiKey;
+                localStorage.setItem('openai-api-key', apiKey);
+            }
             
-            alert('API密钥已保存！');
+            const proxyStatus = document.getElementById('proxyStatus');
+            if (BASE_URL && (API_KEY && API_KEY !== 'YOUR_OPENAI_COMPATIBLE_API_KEY_HERE')) {
+                proxyStatus.textContent = '直连配置已保存';
+                proxyStatus.className = 'proxy-status connected';
+            } else {
+                proxyStatus.textContent = '配置已保存';
+                proxyStatus.className = 'proxy-status connected';
+            }
+            
+            alert('配置已保存！');
         }
         
-        async function testApiKey() {
+        async function testProxyUrl() {
             const apiKeyInput = document.getElementById('apiKeyInput');
+            const baseUrlInput = document.getElementById('baseUrlInput');
             const apiKey = apiKeyInput.value.trim();
+            const baseUrl = normalizeBaseUrl(baseUrlInput.value.trim() || BASE_URL);
             
-            if (!apiKey) {
-                alert('请先输入API密钥！');
+            if (!baseUrl || !apiKey) {
+                alert('请先配置 Base URL 和 API Key！');
                 return;
             }
+            const base = normalizeBaseUrl(baseUrl);
+            const modelsUrl = `${base}/models`;
+            const testUrl = `${base}/chat/completions`;
             
-            const apiStatus = document.getElementById('apiStatus');
-            apiStatus.textContent = '测试中...';
-            apiStatus.className = 'api-status';
+            const proxyStatus = document.getElementById('proxyStatus');
+            proxyStatus.textContent = '测试中...';
+            proxyStatus.className = 'proxy-status';
+            
+            console.log('开始测试API连接 (Moonshot):', {
+                url: testUrl,
+                hasApiKey: !!apiKey
+            });
             
             try {
-                const response = await fetch(CLAUDE_API_URL, {
+                const requestBody = {
+                    model: 'moonshot-v1-8k',
+                    messages: [{ role: 'user', content: '请仅回复22-33个汉字：“测试成功”无需标点' }],
+                    max_tokens: 60
+                };
+
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                };
+
+                // 先探测 /models 确认 JSON 与鉴权
+                const modelsResp = await fetch(modelsUrl, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${apiKey}` }
+                });
+                const modelsCt = modelsResp.headers.get('content-type') || '';
+                if (!modelsResp.ok || !modelsCt.includes('application/json')) {
+                    const text = await modelsResp.text();
+                    throw new Error(`/models 探测失败：${modelsResp.status} ${modelsResp.statusText}，Content-Type: ${modelsCt}。\n片段: ${text.substring(0, 500)}`);
+                }
+
+                const response = await fetch(testUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': apiKey,
-                        'anthropic-version': '2023-06-01'
-                    },
-                    body: JSON.stringify({
-                        model: 'claude-3-sonnet-20240229',
-                        max_tokens: 100,
-                        messages: [
-                            {
-                                role: 'user',
-                                content: '请回复"测试成功"'
-                            }
-                        ]
-                    })
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
                 });
                 
+                console.log('测试响应状态:', response.status, response.statusText);
+                
                 if (response.ok) {
-                    apiStatus.textContent = '连接成功';
-                    apiStatus.className = 'api-status connected';
-                    alert('API连接测试成功！');
+                    // 检查响应内容类型
+                    const contentType = response.headers.get('content-type');
+                    console.log('测试响应Content-Type:', contentType);
+                    
+                    let data;
+                    if (contentType && contentType.includes('application/json')) {
+                        data = await response.json();
+                        console.log('测试响应数据:', data);
+                    } else {
+                        // 如果不是JSON，获取文本内容
+                        const textResponse = await response.text();
+                        console.log('测试非JSON响应内容:', textResponse.substring(0, 200) + '...');
+                        
+                        // 尝试解析为JSON
+                        try {
+                            data = JSON.parse(textResponse);
+                        } catch (parseError) {
+                            throw new Error(`测试响应不是有效的JSON格式，通常是 Base URL 缺少 /v1 或返回 HTML。\n当前 Base URL: ${base}\nContent-Type: ${contentType || '未知'}\n片段: ${textResponse.substring(0, 500)}\n建议：将 Base URL 设为 https://api.moonshot.cn/v1`);
+                        }
+                    }
+                    
+                    let success = false;
+                    success = !!(data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content);
+                    
+                    if (success) {
+                        proxyStatus.textContent = '连接成功';
+                        proxyStatus.className = 'proxy-status connected';
+                        alert('直连连接测试成功！');
+                    } else if (data.error) {
+                        throw new Error(`API错误: ${data.error.message || '未知错误'}`);
+                    } else {
+                        throw new Error('响应格式错误');
+                    }
                 } else {
-                    throw new Error(`API调用失败: ${response.status}`);
+                    const errorText = await response.text();
+                    console.error('测试错误响应:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
                 }
             } catch (error) {
                 console.error('API测试失败:', error);
-                apiStatus.textContent = '连接失败';
-                apiStatus.className = 'api-status error';
-                alert('API连接测试失败，请检查密钥是否正确！');
+                
+                let errorMessage = 'API连接测试失败！';
+                
+                if (error.message.includes('CORS') || error.message.includes('cross-origin')) {
+                    errorMessage = 'CORS跨域错误：API服务器不允许跨域访问。\n\n解决方案：\n1. 检查API端点是否正确\n2. 使用支持CORS的代理服务\n3. 部署到支持CORS的服务器';
+                } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    errorMessage = '网络连接失败：\n\n可能原因：\n1. API端点地址错误\n2. 网络连接问题\n3. API服务不可用';
+                } else if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+                    errorMessage = '认证失败：API Key无效或已过期';
+                } else if (error.message.includes('403') || error.message.includes('Forbidden')) {
+                    errorMessage = '访问被拒绝：API Key权限不足';
+                } else if (error.message.includes('429')) {
+                    errorMessage = '请求频率过高：请稍后再试';
+                } else {
+                    errorMessage = `连接失败：${error.message}`;
+                }
+                
+                proxyStatus.textContent = '连接失败';
+                proxyStatus.className = 'proxy-status error';
+                alert(errorMessage);
             }
         }
+        
+        // 验证镜像地址格式
+        // 代理相关功能已移除
+        
+        // 调试相关函数
+        function toggleDebugPanel() {
+            const panel = document.getElementById('debugPanel');
+            panel.classList.toggle('open');
+            if (panel.classList.contains('open')) {
+                updateDebugInfo();
+            }
+        }
+        
+        function updateDebugInfo() {
+            // 更新API配置信息
+            const apiInfo = document.getElementById('debugApiInfo');
+            const mode = '直连（Moonshot OpenAI兼容）';
+            const status = (BASE_URL && (API_KEY && API_KEY !== 'YOUR_OPENAI_COMPATIBLE_API_KEY_HERE')) ? '已配置' : '未配置';
+            const lines = [
+                `模式: ${mode}`,
+                `Base URL: ${BASE_URL || '未配置'}`,
+                `直连端点: ${(BASE_URL || '').replace(/\/$/, '')}/chat/completions`,
+                `公共服务地址: https://api.moonshot.cn`,
+                `API Key: ${API_KEY ? API_KEY.substring(0, 10) + '...' : '未配置'}`,
+                `状态: ${status}`
+            ];
+            apiInfo.textContent = lines.join('\n');
+            
+            // 更新错误信息
+            const errorInfo = document.getElementById('debugErrors');
+            if (debugErrors.length === 0) {
+                errorInfo.textContent = '暂无错误记录';
+            } else {
+                errorInfo.textContent = debugErrors.slice(-5).join('\n\n');
+            }
+        }
+        
+        function addDebugError(error) {
+            const timestamp = new Date().toLocaleTimeString();
+            debugErrors.push(`[${timestamp}] ${error}`);
+            if (debugErrors.length > 10) {
+                debugErrors = debugErrors.slice(-10);
+            }
+            updateDebugInfo();
+        }
+
+        function toggleModeHelp() {
+            const help = document.getElementById('modeHelp');
+            const useProxyCheckbox = document.getElementById('useProxyCheckbox');
+            if (useProxyCheckbox.checked) {
+                help.textContent = '代理模式：通过代理服务器转发到目标API（保留测试功能）';
+            } else {
+                help.textContent = '直连模式：使用 OpenAI 兼容 Base URL + API Key';
+            }
+        }
+        
+        async function testNetworkConnection() {
+            const networkInfo = document.getElementById('debugNetwork');
+            networkInfo.textContent = '正在测试网络连接...';
+            
+            try {
+                // 测试基本网络连接
+                const response = await fetch('https://httpbin.org/get', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    networkInfo.textContent = '✅ 基本网络连接正常';
+                } else {
+                    networkInfo.textContent = `❌ 网络连接异常: ${response.status}`;
+                }
+            } catch (error) {
+                networkInfo.textContent = `❌ 网络连接失败: ${error.message}`;
+                addDebugError(`网络测试失败: ${error.message}`);
+            }
+        }
+        
     </script>
 </body>
 </html>

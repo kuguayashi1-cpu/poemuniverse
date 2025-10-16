@@ -199,3 +199,4 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, history })
 };
 
 export default HistoryPanel;
+

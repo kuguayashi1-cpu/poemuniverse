@@ -119,3 +119,4 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate }) => {
 };
 
 export default InputSection;
+
